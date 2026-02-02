@@ -50,11 +50,15 @@ For the services For Apple devices to work, you must generate your own serial nu
 
 3. Save and perform a **NVRAM Reset** upon restarting.
 
+---
+
 ### 🌙 Deep Sleep (Hibernation)
 To prevent battery drain when closing the lid, it is recommended to enable true hibernation by running the following command in the terminal:
 ```bash
 `sudo pmset -a hibernatemode 25
 ```
+
+---
 
 ## 📄 Credits
 * [Acidanthera](https://github.com/acidanthera) for OpenCore and base Kexts.
