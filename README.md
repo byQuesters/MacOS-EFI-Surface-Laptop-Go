@@ -1,10 +1,10 @@
 # macOS Sequoia on Microsoft Surface Laptop Go (M1943)
 
-Este repositorio contiene la configuración de **OpenCore** necesaria para ejecutar macOS Sequoia en la Microsoft Surface Laptop Go (Modelo 1943). Esta EFI está optimizada para ofrecer una experiencia cercana a una MacBook real.
+This repository contains the OpenCore configuration required to run macOS Sequoia on the Microsoft Surface Laptop Go (Model 1943). This EFI is optimized to deliver a near-MacBook-like experience, with a focus on the stability of Continuity and Widgets services.
 
 ---
 
-## 💻 Especificaciones de Hardware
+## 💻 Hardware Specifications
 | Componente | Detalle |
 | :--- | :--- |
 | **CPU** | Intel Core i5-1035G1 (Ice Lake) |
@@ -12,45 +12,57 @@ Este repositorio contiene la configuración de **OpenCore** necesaria para ejecu
 | **RAM** | 4GB / 8GB LPDDR4x |
 | **Almacenamiento** | SSD NVMe / eMMC |
 | **Pantalla** | 12.4" PixelSense (1536 x 1024) |
-| **Bootloader** | OpenCore |
+| **Bootloader** | OpenCore 
 
 ---
 
-## ✅ ¿Qué funciona?
+## ✅ What Works?
 
-* **Red:** WiFi nativo (vía AirportItlwm + OCLP) y Bluetooth nativo.
-* **Periféricos:** Teclado (con Hot Plug), Trackpad y TouchScreen.
-* **Multimedia:** Audio, Brillo (teclas de función) y Cámara.
-* **Energía:** Gestión de energía, Batería, Ventilador (Fan) y Reposo (Sleep/Wake).
-* **Puertos:** USB, Surface Dock, SD Card y salida mDP.
-* **Seguridad:** UEFI Secure Boot **ON** y FileVault.
-* **Sistema:** Recovery, Botones de volumen y encendido.
-* **Hibernación:** Deep Sleep (macOS Hibernation `Hibernatemode=25`).
-* **Multi-Boot:** Windows, Linux y chromeOS.
+* **Apple Services:** iPhone widgets (via itlwm + HeliPort), iCloud, iMessage, and App Store.
+* **Network:** Wi-Fi (via itlwm + HeliPort) and native Bluetooth with Sequoia patches.
+* **Peripherals:** Keyboard, Trackpad (multi-touch gestures), and TouchScreen (10-point).
+* **Multimedia:** Audio (Layout 35), Native Brightness, and Webcam.
+* **Power:** Advanced power management, Battery, Fan, and Sleep/Wake.
+* **Ports:** USB-A, USB-C (Data/Charging), Surface Connect, and 3.5mm headphone jack.
+* **System:** Recovery, Physical Buttons Volume and power buttons.
+
+* **Hibernation:** Deep Sleep (macOS Hibernation `Hibernatemode=25`).
 
 ---
 
-## ⚠️ Requisitos Especiales
+## ⚠️ Special Requirements
 
-### 📶 WiFi & OCLP
-Debido a que macOS Sequoia eliminó ciertos drivers de red, para obtener WiFi nativo con **AirportItlwm**:
-1. Instalar la kext correspondiente.
-3. Usar **OpenCore Legacy Patcher (OCLP)** para aplicar los "Root Patches" de red una vez instalado el sistema.
-Para que el WiFi y Bluetooth funcionen correctamente en macOS Sequoia utilizando el método de **AirportItlwm + OCLP**, sigue este tutorial detallado:
-👉 **[Guía Paso a Paso: Intel WiFi & BT en Sequoia](https://www.youtube.com/watch?v=kNXrugg25u0)**
+### 📶 iPhone WiFi & Widgets
+Due to Sequoia's restrictions with the AWDL protocol on Intel chips, to recover the **iPhone Widgets** and maintain a stable connection:
+1. This EFI uses **itlwm.kext** instead of AirportItlwm.
 
-*Nota: Es necesario aplicar los "Root Patches" desde OpenCore Legacy Patcher después de cada actualización de macOS para mantener el soporte de red.*
+2. It is mandatory to use the **HeliPort** app to manage WiFi networks.
 
-### 🌙 Deep Sleep
-Para una gestión óptima de la batería al cerrar la tapa, se recomienda activar la hibernación real ejecutando:
+3. This method prevents Bluetooth from conflicting with WiFi, enabling the iPhone to be visible in the Notification Center.
+
+👉 **[Download HeliPort.app](https://github.com/OpenIntelWireless/HeliPort/releases)**
+
+### 🔑 Identity (SMBIOS)
+For the services For Apple devices to work, you must generate your own serial numbers:
+1. Open the `config.plist` file with **OCAuxiliaryTools**.
+
+2. Go to **PlatformInfo > Generic** and generate data for `MacBookAir9,1`.
+
+3. Save and perform a **NVRAM Reset** upon restarting.
+
+### 🌙 Deep Sleep (Hibernation)
+To prevent battery drain when closing the lid, it is recommended to enable true hibernation by running the following command in the terminal:
 ```bash
-sudo pmset -a hibernatemode 25
+`sudo pmset -a hibernatemode 25
 ```
 
+## 📄 Credits
+* [Acidanthera](https://github.com/acidanthera) for OpenCore and base Kexts.
 
-## 📄 Créditos
-* [Acidanthera](https://github.com/acidanthera) por OpenCore y Kexts base.
-* [BigSurface](https://github.com/Xiashangning/BigSurface) por el soporte específico para dispositivos Microsoft Surface.
-* [OpenIntelWireless](https://github.com/OpenIntelWireless) por los drivers itlwm y Bluetooth.
-* [EliteMacx86](https://www.youtube.com/watch?v=kNXrugg25u0) por el tutorial de WiFi y Bluetooth en macOS Sequoia.
-* [Dortania](https://dortania.github.io/OpenCore-Install-Guide/) por la guía principal de OpenCore.
+* [BigSurface](https://github.com/Xiashangning/BigSurface) for the specific support for Microsoft Surface devices.
+
+* [OpenIntelWireless](https://github.com/OpenIntelWireless) for the itlwm and Bluetooth drivers.
+
+* [EliteMacx86](https://www.youtube.com/watch?v=kNXrugg25u0) for the WiFi and Bluetooth tutorial on macOS Sequoia.
+
+* [Dortania](https://dortania.github.io/OpenCore-Install-Guide/) for the main OpenCore guide.
